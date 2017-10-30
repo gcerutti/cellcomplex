@@ -19,7 +19,7 @@
 
 import numpy as np
 
-from tissue.cellcomplex.property_topomesh.property_topomesh_creation import (
+from vplants.cellcomplex.property_topomesh.property_topomesh_creation import (
     vertex_topomesh, edge_topomesh)
 
 

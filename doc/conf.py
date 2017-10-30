@@ -116,8 +116,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'tissue.cellcomplex'
-copyright = u'2015, tissue.cellcomplex'
+project = u'vplants.cellcomplex'
+copyright = u'2015, vplants.cellcomplex'
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -126,7 +126,7 @@ copyright = u'2015, tissue.cellcomplex'
 
 # find version number in /src/$pkg_pth/version.py
 pkgver = {}
-with open("../src/tissue/cellcomplex/version.py") as fp:
+with open("../src/vplants/cellcomplex/version.py") as fp:
     exec(fp.read(), pkgver)
 
 # The short X.Y version.

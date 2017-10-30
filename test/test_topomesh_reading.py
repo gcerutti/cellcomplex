@@ -17,12 +17,12 @@
 #
 ###############################################################################
 
-import tissue.cellcomplex
-from tissue.cellcomplex.property_topomesh.property_topomesh_io import (
+import vplants.cellcomplex
+from vplants.cellcomplex.property_topomesh.property_topomesh_io import (
     read_ply_property_topomesh)
-from tissue.cellcomplex.property_topomesh.property_topomesh_io import (
+from vplants.cellcomplex.property_topomesh.property_topomesh_io import (
     read_obj_property_topomesh)
-from tissue.cellcomplex.property_topomesh.property_topomesh_io import (
+from vplants.cellcomplex.property_topomesh.property_topomesh_io import (
     meshread)
 
 
@@ -30,7 +30,7 @@ import os
 
 
 def test_ply_reading():
-    # dirname = shared_data(tissue.cellcomplex)
+    # dirname = shared_data(vplants.cellcomplex)
     dirname = os.path.join(os.path.dirname(__file__),"../share/data/")
     filename = os.path.join(dirname, "p194-t4_L1_topomesh.ply")
     print filename
@@ -40,7 +40,7 @@ def test_ply_reading():
 
 
 def test_obj_reading():
-    # dirname = shared_data(tissue.cellcomplex)
+    # dirname = shared_data(vplants.cellcomplex)
     dirname = os.path.join(os.path.dirname(__file__),"../share/data/")
     filename = os.path.join(dirname, "icosahedron.obj")
     print filename
@@ -51,7 +51,7 @@ def test_obj_reading():
 
 
 def test_generic_reading():
-    # dirname = shared_data(tissue.cellcomplex)
+    # dirname = shared_data(vplants.cellcomplex)
     dirname = os.path.join(os.path.dirname(__file__),"../share/data/")
     filename = os.path.join(dirname, "icosahedron.obj")
     print filename

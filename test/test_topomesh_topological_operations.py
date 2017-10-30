@@ -20,11 +20,11 @@
 
 import numpy as np
 
-from tissue.cellcomplex.property_topomesh.property_topomesh_optimization import (
+from vplants.cellcomplex.property_topomesh.property_topomesh_optimization import (
     topomesh_flip_edge, topomesh_split_edge)
-from tissue.cellcomplex.property_topomesh.property_topomesh_analysis import (
+from vplants.cellcomplex.property_topomesh.property_topomesh_analysis import (
     compute_topomesh_property)
-from tissue.cellcomplex.property_topomesh.example_topomesh import (
+from vplants.cellcomplex.property_topomesh.example_topomesh import (
     square_topomesh)
 
 

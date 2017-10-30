@@ -19,13 +19,13 @@
 
 import numpy as np
 
-from tissue.cellcomplex.property_topomesh.property_topomesh_analysis import (
+from vplants.cellcomplex.property_topomesh.property_topomesh_analysis import (
     compute_topomesh_property, compute_topomesh_vertex_property_from_faces)
 
-from tissue.cellcomplex.property_topomesh.example_topomesh import (
+from vplants.cellcomplex.property_topomesh.example_topomesh import (
     square_topomesh, hexagon_topomesh, sphere_topomesh)
 
-from tissue.container import array_dict
+from vplants.container import array_dict
 
 
 def test_length_property():

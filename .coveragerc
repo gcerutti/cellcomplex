@@ -1,10 +1,10 @@
 # {# pkglts, coverage
 [html]
-title = tissue.cellcomplex's coverage
+title = vplants.cellcomplex's coverage
 directory = build/htmlcov
 
 [run]
-source = tissue.cellcomplex
+source = vplants.cellcomplex
 
 [report]
 exclude_lines =

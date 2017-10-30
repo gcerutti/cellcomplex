@@ -12,14 +12,14 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 
-# find version number in src/tissue/cellcomplex/version.py
+# find version number in src/vplants/cellcomplex/version.py
 version = {}
-with open("src/tissue/cellcomplex/version.py") as fp:
+with open("src/vplants/cellcomplex/version.py") as fp:
     exec(fp.read(), version)
 
 
 setup_kwds = dict(
-    name='tissue.cellcomplex',
+    name='vplants.cellcomplex',
     version=version["__version__"],
     description=short_descr,
     long_description=readme + '\n\n' + history,
