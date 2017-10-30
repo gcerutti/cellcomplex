@@ -16,7 +16,7 @@
         "frederic.boudon@inria.fr"
       ]
     ], 
-    "namespace": "openalea", 
+    "namespace": "tissue", 
     "pkgname": "cellcomplex", 
     "url": null
   }, 

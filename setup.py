@@ -12,14 +12,14 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 
-# find version number in src/openalea/cellcomplex/version.py
+# find version number in src/tissue/cellcomplex/version.py
 version = {}
-with open("src/openalea/cellcomplex/version.py") as fp:
+with open("src/tissue/cellcomplex/version.py") as fp:
     exec(fp.read(), version)
 
 
 setup_kwds = dict(
-    name='openalea.cellcomplex',
+    name='tissue.cellcomplex',
     version=version["__version__"],
     description=short_descr,
     long_description=readme + '\n\n' + history,

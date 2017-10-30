@@ -17,30 +17,33 @@
 #
 ###############################################################################
 
-import openalea.cellcomplex
-from openalea.cellcomplex.property_topomesh.property_topomesh_io import (
+import tissue.cellcomplex
+from tissue.cellcomplex.property_topomesh.property_topomesh_io import (
     read_ply_property_topomesh)
-from openalea.cellcomplex.property_topomesh.property_topomesh_io import (
+from tissue.cellcomplex.property_topomesh.property_topomesh_io import (
     read_obj_property_topomesh)
-from openalea.cellcomplex.property_topomesh.property_topomesh_io import (
+from tissue.cellcomplex.property_topomesh.property_topomesh_io import (
     meshread)
 
-from openalea.deploy.shared_data import shared_data
 
 import os
 
 
 def test_ply_reading():
-    dirname = shared_data(openalea.cellcomplex)
+    # dirname = shared_data(tissue.cellcomplex)
+    dirname = os.path.join(os.path.dirname(__file__),"../share/data/")
     filename = os.path.join(dirname, "p194-t4_L1_topomesh.ply")
+    print filename
     topomesh = read_ply_property_topomesh(filename)
 
     assert topomesh.nb_wisps(0) == 2148
 
 
 def test_obj_reading():
-    dirname = shared_data(openalea.cellcomplex)
+    # dirname = shared_data(tissue.cellcomplex)
+    dirname = os.path.join(os.path.dirname(__file__),"../share/data/")
     filename = os.path.join(dirname, "icosahedron.obj")
+    print filename
     topomesh = read_obj_property_topomesh(filename)
 
     assert topomesh.nb_wisps(0) == 12
@@ -48,13 +51,16 @@ def test_obj_reading():
 
 
 def test_generic_reading():
-    dirname = shared_data(openalea.cellcomplex)
+    # dirname = shared_data(tissue.cellcomplex)
+    dirname = os.path.join(os.path.dirname(__file__),"../share/data/")
     filename = os.path.join(dirname, "icosahedron.obj")
+    print filename
     topomesh = meshread(filename)
 
     assert topomesh.nb_wisps(0) == 12
 
     filename = os.path.join(dirname, "p194-t4_L1_topomesh.ply")
+    print filename
     topomesh = read_ply_property_topomesh(filename)
 
     assert topomesh.nb_wisps(0) == 2148

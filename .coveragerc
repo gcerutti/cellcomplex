@@ -1,10 +1,10 @@
 # {# pkglts, coverage
 [html]
-title = openalea.cellcomplex's coverage
+title = tissue.cellcomplex's coverage
 directory = build/htmlcov
 
 [run]
-source = openalea.cellcomplex
+source = tissue.cellcomplex
 
 [report]
 exclude_lines =

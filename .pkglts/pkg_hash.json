@@ -1,6 +1,6 @@
 {
   ".coveragerc": {
-    "coverage": "AaOrhzAM3sDehRpC8kdaORQhgrzWJYnFM4wN8/Apv8JWn4DnKZ0nzAETbQWjOzl998LT1uMmrz5khr/gZesOpQ=="
+    "coverage": "P69hyppK8NrQgw7gJuudtFPaxpDi0JPaJeC/GwnjBX8t2fpilcHxQdiVx9912drDE9ztZCIFFl163DZ6t6S8qw=="
   }, 
   ".gitignore": {
     "github": "wVVlsQPP65I5Gg6bW37JENFtYxO6Naq7x+mO0DaDGFVbMPk2o5QJ3DUwMoYfkOfou9lcR/6DC0MXr7hnrTWc9g=="
@@ -30,7 +30,7 @@
   "doc/_static/nonempty.txt": {}, 
   "doc/authors.rst": {}, 
   "doc/conf.py": {
-    "sphinx": "mELamPtfuz9lj5oRmbzlol1K9TO2hbbKHnGwQz4Ot/jCJEIi4Lp+Suwu/UZd5qBx2mRLLvuoODq/DqyynUTLOQ=="
+    "sphinx": "AgatdtKXvz+ov5hZIx/77wMweo4cJJDJ8gzXjoc69Q+b1N7Pmh1hKNXj4jO3On3NRtd7Tcg4zxo3mT9wkg66IA=="
   }, 
   "doc/contributing.rst": {}, 
   "doc/history.rst": {}, 
@@ -48,16 +48,22 @@
     "pysetup": "Pi1fUdnE6J8pk8pjDZobSjnl0W0kX9o6nvS/28poGSPDqyrMOQcjBPV/8BVtR3m070MRgY0i8/rkb8D7Lvi/nQ=="
   }, 
   "setup.cfg": {
-    "pysetup": "LTCGMIlVc5c3y+sVc51LWjn02SPTu6VnJ5Q5intM97+jB6raBHccYsKXCrFJ8F2QBkLXmQxpaE0Ikbimxg8E9A=="
+    "pysetup": "m2BzPmevxUFO5ww0/2KDPgSetYFLl6rPDLkrVbuY8Cp0BWuz2s5Epfs8CRyWMsu3T7D4koj0FTRSwVmPgStrpA=="
   }, 
   "setup.py": {
     "pysetup.call": "2wHuP94SpWKZpqOzExkQGTxnhGPgBHK3qOdPn0Ncstj5FkZ7FBGGM/inqAXaI4QLKQtTNlOUYRGSkYUWAUcf1w==", 
-    "pysetup.kwds": "2tXcuPtGaQlZlVdQXY4scGaUdG3o8g0qwKjBKBwUEUbli9fb2J4Nd335vc3jYNdOQ4w6u0YP31O02HxwyQ/5Tw=="
+    "pysetup.kwds": "bEWzioJKj2iSoFFMFe3y691nc2yVzr4LR+OgGuU7frZ3x9ce+FI7rYvSPB19TDHxzqO5WJKO/3Nwd7OI9s5cxg=="
   }, 
   "src/openalea/cellcomplex/__init__.py": {
     "base": "gR33dW0qqYmsV9NSNB+DD8XmuxnC2t0mKjnMoU5728qh97fSER6MbX+3QKxpZDLByZToaAay4xhx8acxketJmA=="
   }, 
   "src/openalea/cellcomplex/version.py": {
+    "version": "vlcF8GnD2TE81ja4r8xZsp7w0qmLS6xRAHhixvZJdfJX9wFjHN13OBzau05z0uc0zPzF9X+/JaCmy6rxDLYx9Q=="
+  }, 
+  "src/tissue/cellcomplex/__init__.py": {
+    "base": "gR33dW0qqYmsV9NSNB+DD8XmuxnC2t0mKjnMoU5728qh97fSER6MbX+3QKxpZDLByZToaAay4xhx8acxketJmA=="
+  }, 
+  "src/tissue/cellcomplex/version.py": {
     "version": "vlcF8GnD2TE81ja4r8xZsp7w0qmLS6xRAHhixvZJdfJX9wFjHN13OBzau05z0uc0zPzF9X+/JaCmy6rxDLYx9Q=="
   }, 
   "test/__init__.py": {}

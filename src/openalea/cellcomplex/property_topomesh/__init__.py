@@ -1,2 +1,0 @@
-from openalea.container import PropertyTopomesh
-from openalea.cellcomplex.property_topomesh.property_topomesh_io import meshread
