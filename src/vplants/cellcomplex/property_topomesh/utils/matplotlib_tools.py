@@ -1,6 +1,6 @@
 import numpy as np
 
-from openalea.cellcomplex.property_topomesh.property_topomesh_analysis import compute_topomesh_property, is_triangular
+from vplants.cellcomplex.property_topomesh.property_topomesh_analysis import compute_topomesh_property, is_triangular
 
 from matplotlib import cm
 from matplotlib import tri
