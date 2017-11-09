@@ -271,7 +271,7 @@ def compute_topomesh_property(topomesh, property_name, degree=0, positions=None,
                     face_triangle_normals = face_triangle_normals/np.linalg.norm(face_triangle_normals,axis=1)[:,np.newaxis]
                     face_triangle_lengths = np.linalg.norm(vertices_positions[...,triangle_edge_list,1] - vertices_positions[...,triangle_edge_list,0],axis=2)
                     face_triangle_perimeters = face_triangle_lengths.sum(axis=1)
-                    face_triangle_areas = np.sqrt((face_triangle_perimeters/2.0)*(face_triangle_perimeters/2.0-face_triangle_lengths[...,0])*(face_triangle_perimeters/2.0-face_triangle_lengths[...,1])*(face_triangle_perimeters/2.0-face_triangle_lengths[...,2]))
+                    face_triangle_areas = np.sqrt(np.maximum(0,(face_triangle_perimeters/2.0)*(face_triangle_perimeters/2.0-face_triangle_lengths[...,0])*(face_triangle_perimeters/2.0-face_triangle_lengths[...,1])*(face_triangle_perimeters/2.0-face_triangle_lengths[...,2])))
                     face_normal = (face_triangle_normals*face_triangle_areas[:,np.newaxis]).sum(axis=0)/face_triangle_areas.sum()
                 face_normal = face_normal/np.linalg.norm(face_normal)
                 oriented_face_normals += [face_normal]
@@ -717,7 +717,7 @@ def compute_topomesh_property(topomesh, property_name, degree=0, positions=None,
             compute_topomesh_property(topomesh,'length',degree=1)
         edge_lengths = topomesh.wisp_property('length',degree=1).values(topomesh.wisp_property('borders',degree=degree).values(list(topomesh.wisps(degree))))
         triangle_perimeters = np.sum(edge_lengths,axis=1)
-        triangle_areas = np.sqrt((triangle_perimeters/2.0)*(triangle_perimeters/2.0-edge_lengths[:,0])*(triangle_perimeters/2.0-edge_lengths[:,1])*(triangle_perimeters/2.0-edge_lengths[:,2]))
+        triangle_areas = np.sqrt(np.maximum(0,(triangle_perimeters/2.0)*(triangle_perimeters/2.0-edge_lengths[:,0])*(triangle_perimeters/2.0-edge_lengths[:,1])*(triangle_perimeters/2.0-edge_lengths[:,2])))
         topomesh.update_wisp_property('area',degree=degree,values=triangle_areas,keys=np.array(list(topomesh.wisps(degree))))
 
     if property_name == 'eccentricity':
@@ -733,10 +733,10 @@ def compute_topomesh_property(topomesh, property_name, degree=0, positions=None,
         triangle_edge_vectors = topomesh.wisp_property('barycenter',degree=0).values(triangle_edge_vertices[...,1]) - topomesh.wisp_property('barycenter',degree=0).values(triangle_edge_vertices[...,0])
         triangle_edge_lengths = np.linalg.norm(triangle_edge_vectors,axis=2)
 
-        triangle_sinuses = np.zeros_like(triangle_edge_lengths,np.float32)
-        triangle_sinuses[:,0] = np.power(np.array(1.0 - np.power((triangle_edge_lengths[:,1]**2+triangle_edge_lengths[:,2]**2-triangle_edge_lengths[:,0]**2)/(2.0*triangle_edge_lengths[:,1]*triangle_edge_lengths[:,2]),2.0),np.float16),0.5)
-        triangle_sinuses[:,1] = np.power(np.array(1.0 - np.power((triangle_edge_lengths[:,0]**2+triangle_edge_lengths[:,1]**2-triangle_edge_lengths[:,2]**2)/(2.0*triangle_edge_lengths[:,0]*triangle_edge_lengths[:,1]),2.0),np.float16),0.5)
-        triangle_sinuses[:,2] = np.power(np.array(1.0 - np.power((triangle_edge_lengths[:,2]**2+triangle_edge_lengths[:,0]**2-triangle_edge_lengths[:,1]**2)/(2.0*triangle_edge_lengths[:,2]*triangle_edge_lengths[:,0]),2.0),np.float16),0.5)
+        triangle_sinuses = np.zeros_like(triangle_edge_lengths,np.float64)
+        triangle_sinuses[:,0] = np.sqrt(np.maximum(0,np.array(1.0 - np.power((triangle_edge_lengths[:,1]**2+triangle_edge_lengths[:,2]**2-triangle_edge_lengths[:,0]**2)/np.maximum(1e-5,2.0*triangle_edge_lengths[:,1]*triangle_edge_lengths[:,2]),2.0),np.float64)))
+        triangle_sinuses[:,1] = np.sqrt(np.maximum(0,np.array(1.0 - np.power((triangle_edge_lengths[:,0]**2+triangle_edge_lengths[:,1]**2-triangle_edge_lengths[:,2]**2)/np.maximum(1e-5,2.0*triangle_edge_lengths[:,0]*triangle_edge_lengths[:,1]),2.0),np.float64)))
+        triangle_sinuses[:,2] = np.sqrt(np.maximum(0,np.array(1.0 - np.power((triangle_edge_lengths[:,2]**2+triangle_edge_lengths[:,0]**2-triangle_edge_lengths[:,1]**2)/np.maximum(1e-5,2.0*triangle_edge_lengths[:,2]*triangle_edge_lengths[:,0]),2.0),np.float64)))
 
         triangle_sinus_eccentricities = 1.0 - (2.0*(triangle_sinuses[:,0]+triangle_sinuses[:,1]+triangle_sinuses[:,2]))/(3.*np.sqrt(3.))
         topomesh.update_wisp_property('eccentricity',degree=degree,values=triangle_sinus_eccentricities,keys=np.array(list(topomesh.wisps(degree))))
@@ -798,7 +798,7 @@ def compute_topomesh_property(topomesh, property_name, degree=0, positions=None,
                 normal_vectors[triangle_epidermis] = normal_orientation[...,np.newaxis]*normal_vectors[triangle_epidermis]
                 normal_norms = np.linalg.norm(normal_vectors,axis=1)
                 # normal_norms[np.where(normal_norms==0)] = 0.001
-                topomesh.update_wisp_property('normal',degree=degree,values=normal_vectors/normal_norms[:,np.newaxis],keys=np.array(list(topomesh.wisps(degree))))
+                topomesh.update_wisp_property('normal',degree=degree,values=normal_vectors/np.maximum(1e-5,normal_norms)[:,np.newaxis],keys=np.array(list(topomesh.wisps(degree))))
 
             elif normal_method == "barycenter":
                 vertices_positions = positions.values(topomesh.wisp_property('vertices',degree).values(list(topomesh.wisps(degree))))
@@ -856,9 +856,9 @@ def compute_topomesh_property(topomesh, property_name, degree=0, positions=None,
         triangle_edge_lengths = np.linalg.norm(triangle_edge_vectors,axis=2)
 
         triangle_cosines = np.zeros_like(triangle_edge_lengths,np.float32)
-        triangle_cosines[:,0] = (triangle_edge_lengths[:,1]**2+triangle_edge_lengths[:,2]**2-triangle_edge_lengths[:,0]**2)/(2.0*triangle_edge_lengths[:,1]*triangle_edge_lengths[:,2])
-        triangle_cosines[:,1] = (triangle_edge_lengths[:,0]**2+triangle_edge_lengths[:,1]**2-triangle_edge_lengths[:,2]**2)/(2.0*triangle_edge_lengths[:,0]*triangle_edge_lengths[:,1])
-        triangle_cosines[:,2] = (triangle_edge_lengths[:,2]**2+triangle_edge_lengths[:,0]**2-triangle_edge_lengths[:,1]**2)/(2.0*triangle_edge_lengths[:,2]*triangle_edge_lengths[:,0])
+        triangle_cosines[:,0] = (triangle_edge_lengths[:,1]**2+triangle_edge_lengths[:,2]**2-triangle_edge_lengths[:,0]**2)/np.maximum(1e-5,2.0*triangle_edge_lengths[:,1]*triangle_edge_lengths[:,2])
+        triangle_cosines[:,1] = (triangle_edge_lengths[:,0]**2+triangle_edge_lengths[:,1]**2-triangle_edge_lengths[:,2]**2)/np.maximum(1e-5,2.0*triangle_edge_lengths[:,0]*triangle_edge_lengths[:,1])
+        triangle_cosines[:,2] = (triangle_edge_lengths[:,2]**2+triangle_edge_lengths[:,0]**2-triangle_edge_lengths[:,1]**2)/np.maximum(1e-5,2.0*triangle_edge_lengths[:,2]*triangle_edge_lengths[:,0])
         triangle_angles = np.arccos(triangle_cosines)
         topomesh.update_wisp_property('angles',degree=degree,values=triangle_angles,keys=np.array(list(topomesh.wisps(degree))))
 
@@ -1352,15 +1352,15 @@ def compute_topomesh_triangle_properties(topomesh,positions=None):
         topomesh.add_wisp_property('perimeter',degree=2)
     topomesh.update_wisp_property('perimeter',degree=2,values=triangle_perimeters,keys=np.array(list(topomesh.wisps(2))))
     
-    triangle_areas = np.sqrt((triangle_perimeters/2.0)*(triangle_perimeters/2.0-edge_lengths[:,0])*(triangle_perimeters/2.0-edge_lengths[:,1])*(triangle_perimeters/2.0-edge_lengths[:,2]))
+    triangle_areas = np.sqrt(np.maximum(0,(triangle_perimeters/2.0)*(triangle_perimeters/2.0-edge_lengths[:,0])*(triangle_perimeters/2.0-edge_lengths[:,1])*(triangle_perimeters/2.0-edge_lengths[:,2])))
     if not 'area' in topomesh.wisp_property_names(2):
         topomesh.add_wisp_property('area',degree=2)
     topomesh.update_wisp_property('area',degree=2,values=triangle_areas,keys=np.array(list(topomesh.wisps(2))))
 
     triangle_sinuses = np.zeros_like(edge_lengths,np.float32)
-    triangle_sinuses[:,0] = np.sqrt(np.array(1.0 - np.power(edge_lengths[:,1]**2+edge_lengths[:,2]**2-edge_lengths[:,0]**2,2.0)/np.power(2.0*edge_lengths[:,1]*edge_lengths[:,2],2.0),np.float16))
-    triangle_sinuses[:,1] = np.sqrt(np.array(1.0 - np.power(edge_lengths[:,2]**2+edge_lengths[:,0]**2-edge_lengths[:,1]**2,2.0)/np.power(2.0*edge_lengths[:,2]*edge_lengths[:,0],2.0),np.float16))
-    triangle_sinuses[:,2] = np.sqrt(np.array(1.0 - np.power(edge_lengths[:,0]**2+edge_lengths[:,1]**2-edge_lengths[:,2]**2,2.0)/np.power(2.0*edge_lengths[:,0]*edge_lengths[:,1],2.0),np.float16))
+    triangle_sinuses[:,0] = np.sqrt(np.maximum(0,np.array(1.0 - np.power(edge_lengths[:,1]**2+edge_lengths[:,2]**2-edge_lengths[:,0]**2,2.0)/np.power(np.maximum(1e-5,2.0*edge_lengths[:,1]*edge_lengths[:,2]),2.0),np.float16)))
+    triangle_sinuses[:,1] = np.sqrt(np.maximum(0,np.array(1.0 - np.power(edge_lengths[:,2]**2+edge_lengths[:,0]**2-edge_lengths[:,1]**2,2.0)/np.power(np.maximum(1e-5,2.0*edge_lengths[:,2]*edge_lengths[:,0]),2.0),np.float16)))
+    triangle_sinuses[:,2] = np.sqrt(np.maximum(0,np.array(1.0 - np.power(edge_lengths[:,0]**2+edge_lengths[:,1]**2-edge_lengths[:,2]**2,2.0)/np.power(np.maximum(1e-5,2.0*edge_lengths[:,0]*edge_lengths[:,1]),2.0),np.float16)))
 
     triangle_sinus_eccentricities = 1.0 - (2.0*(triangle_sinuses[:,0]+triangle_sinuses[:,1]+triangle_sinuses[:,2]))/(3*np.sqrt(3))
     if not 'eccentricity' in topomesh.wisp_property_names(2):

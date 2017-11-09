@@ -4,6 +4,7 @@
 from utils import IdDict
 from graph import Graph
 from property_graph import PropertyGraph
+from temporal_property_graph import TemporalPropertyGraph
 
 ################################
 #

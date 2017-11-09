@@ -46,7 +46,7 @@ from time                                   import time
 from copy                                   import deepcopy
 
 
-def property_topomesh_vertices_deformation(topomesh,iterations=1,omega_forces=dict(taubin_smoothing=0.65),sigma_deformation=0.1,gradient_derivatives=None,gaussian_sigma=10.0,voxelsize=(1.0,1.0,1.0),target_normal=None,target_areas=None,fix_borders=False):
+def property_topomesh_vertices_deformation(topomesh,iterations=1,omega_forces=dict(taubin_smoothing=0.65),sigma_deformation=0.1,gradient_derivatives=None,gaussian_sigma=10.0,voxelsize=(1.0,1.0,1.0),target_normal=None,target_areas=None,fix_borders=False,verbose=True):
 
     """Optimize the positions of the mesh vertices along multiple criteria.
 
@@ -116,90 +116,90 @@ def property_topomesh_vertices_deformation(topomesh,iterations=1,omega_forces=di
 
         if omega_forces.has_key('gradient') and omega_forces['gradient']!=0.0:
             start_time = time()
-            print "--> Computing vertex force"
+            if verbose : print "--> Computing vertex force"
             assert gradient_derivatives != None
             gradient_force = property_topomesh_cell_vertex_force(topomesh,gradient_derivatives,voxelsize)
             # print gradient_force
             deformation_force += omega_forces['gradient']*gradient_force
             end_time = time()
-            print "<-- Computing vertex force   [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing vertex force   [",end_time-start_time,"s]"
 
         if omega_forces.has_key('regularization') and omega_forces['regularization']!=0.0:
             start_time = time()
-            print "--> Computing regularization force"
+            if verbose : print "--> Computing regularization force"
             regularization_force = property_topomesh_triangle_regularization_force(topomesh)
             deformation_force += omega_forces['regularization']*regularization_force
             end_time = time()
-            print "<-- Computing regularization force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing regularization force [",end_time-start_time,"s]"
 
         if omega_forces.has_key('area') and omega_forces['area']!=0.0:
             start_time = time()
-            print "--> Computing area force"
+            if verbose : print "--> Computing area force"
             area_force = property_topomesh_area_smoothing_force(topomesh,target_areas)
             deformation_force += omega_forces['area']*area_force
             end_time = time()
-            print "<-- Computing area force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing area force [",end_time-start_time,"s]"
 
         if omega_forces.has_key('laplacian') and omega_forces['laplacian']!=0.0:
             start_time = time()
-            print "--> Computing laplacian smoothing force"
+            if verbose : print "--> Computing laplacian smoothing force"
             # laplacian_force = property_topomesh_laplacian_smoothing_force(topomesh)
             laplacian_force = property_topomesh_laplacian_epidermis_convexity_force(topomesh)
             deformation_force += omega_forces['laplacian']*laplacian_force
             end_time = time()
-            print "<-- Computing laplacian smoothing force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing laplacian smoothing force [",end_time-start_time,"s]"
 
         if omega_forces.has_key('laplacian_smoothing') and omega_forces['laplacian_smoothing']!=0.0:
             start_time = time()
-            print "--> Computing laplacian smoothing force"
+            if verbose : print "--> Computing laplacian smoothing force"
             laplacian_force = property_topomesh_laplacian_smoothing_force(topomesh)
             deformation_force += omega_forces['laplacian_smoothing']*laplacian_force
             end_time = time()
-            print "<-- Computing laplacian smoothing force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing laplacian smoothing force [",end_time-start_time,"s]"
 
         if omega_forces.has_key('gaussian_smoothing') and omega_forces['gaussian_smoothing']!=0.0:
             start_time = time()
-            print "--> Computing gaussian smoothing force"
+            if verbose : print "--> Computing gaussian smoothing force"
             gaussian_force = property_topomesh_gaussian_smoothing_force(topomesh,gaussian_sigma=gaussian_sigma)
             deformation_force += omega_forces['gaussian_smoothing']*gaussian_force
             end_time = time()
-            print "<-- Computing gaussian smoothing force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing gaussian smoothing force [",end_time-start_time,"s]"
 
         if omega_forces.has_key('curvature_flow_smoothing') and omega_forces['curvature_flow_smoothing']!=0.0:
             start_time = time()
-            print "--> Computing curvature flow smoothing force"
+            if verbose : print "--> Computing curvature flow smoothing force"
             curvature_flow_force = property_topomesh_cotangent_laplacian_smoothing_force(topomesh)
             deformation_force += omega_forces['curvature_flow_smoothing']*curvature_flow_force
             end_time = time()
-            print "<-- Computing curvature flow smoothing force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing curvature flow smoothing force [",end_time-start_time,"s]"
 
         if omega_forces.has_key('mean_curvature_smoothing') and omega_forces['mean_curvature_smoothing']!=0.0:
             start_time = time()
-            print "--> Computing mean curvature smoothing force"
+            if verbose : print "--> Computing mean curvature smoothing force"
             mean_curvature_force = property_topomesh_mean_curvature_smoothing_force(topomesh)
             deformation_force += omega_forces['mean_curvature_smoothing']*mean_curvature_force
             end_time = time()
-            print "<-- Computing mean curvature smoothing force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing mean curvature smoothing force [",end_time-start_time,"s]"
 
         if omega_forces.has_key('taubin_smoothing') and omega_forces['taubin_smoothing']!=0.0:
             start_time = time()
-            print "--> Computing taubin smoothing force"
+            if verbose : print "--> Computing taubin smoothing force"
             taubin_force = property_topomesh_taubin_smoothing_force(topomesh,gaussian_sigma=gaussian_sigma)
             deformation_force += omega_forces['taubin_smoothing']*taubin_force
             end_time = time()
-            print "<-- Computing taubin smoothing force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing taubin smoothing force [",end_time-start_time,"s]"
 
         if omega_forces.has_key('global_taubin_smoothing') and omega_forces['global_taubin_smoothing']!=0.0:
             start_time = time()
-            print "--> Computing taubin smoothing force"
+            if verbose : print "--> Computing taubin smoothing force"
             taubin_force = property_topomesh_taubin_smoothing_force(topomesh,gaussian_sigma=20.0,cellwise_smoothing=False)
             deformation_force += omega_forces['global_taubin_smoothing']*taubin_force
             end_time = time()
-            print "<-- Computing taubin smoothing force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing taubin smoothing force [",end_time-start_time,"s]"
 
         if omega_forces.has_key('planarization') and omega_forces['planarization']!=0.0:
             start_time = time()
-            print "--> Computing planarization force"
+            if verbose : print "--> Computing planarization force"
             if target_normal is not None:
                 planarization_force = property_topomesh_planarization_force(topomesh,target_normal)
             else:
@@ -211,26 +211,26 @@ def property_topomesh_vertices_deformation(topomesh,iterations=1,omega_forces=di
             # print planarization_force
             deformation_force += omega_forces['planarization']*planarization_force
             end_time = time()
-            print "<-- Computing planarization force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing planarization force [",end_time-start_time,"s]"
         
         if omega_forces.has_key('epidermis_planarization') and omega_forces['epidermis_planarization']!=0.0:
             start_time = time()
-            print "--> Computing planarization force"
+            if verbose : print "--> Computing planarization force"
             planarization_force = property_topomesh_epidermis_planarization_force(topomesh)
             deformation_force += omega_forces['epidermis_planarization']*planarization_force
             end_time = time()
-            print "<-- Computing planarization force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing planarization force [",end_time-start_time,"s]"
 
         if omega_forces.has_key('convexity') and omega_forces['convexity']!=0.0:
             start_time = time()
-            print "--> Computing epidermis convexity force"
+            if verbose : print "--> Computing epidermis convexity force"
             convexity_force = property_topomesh_epidermis_convexity_force(topomesh)
             deformation_force += omega_forces['convexity']*convexity_force
             end_time = time()
-            print "<-- Computing epidermis convexity force [",end_time-start_time,"s]"
+            if verbose : print "<-- Computing epidermis convexity force [",end_time-start_time,"s]"
 
         start_time = time()
-        print "--> Applying Forces"
+        if verbose : print "--> Applying Forces"
         deformation_force_amplitude = np.power(np.sum(np.power(deformation_force,2.0),axis=1),0.5)+np.power(10.,-8)
         # print deformation_force
         #deformation_force[np.where(deformation_force_amplitude>sigma_deformation)[0]] = sigma_deformation*deformation_force[np.where(deformation_force_amplitude>sigma_deformation)[0]]/deformation_force_amplitude[np.where(deformation_force_amplitude>sigma_deformation)[0]][:,np.newaxis]
@@ -243,15 +243,15 @@ def property_topomesh_vertices_deformation(topomesh,iterations=1,omega_forces=di
         topomesh.update_wisp_property('barycenter',degree=0,values=topomesh.wisp_property('barycenter',degree=0).values(list(topomesh.wisps(0))) + deformation_force,keys=list(topomesh.wisps(0)))
         
         end_time = time()
-        print "<-- Applying Forces          [",end_time-start_time,"s]"
+        if verbose : print "<-- Applying Forces          [",end_time-start_time,"s]"
 
         start_time = time()
-        print "--> Updating distances"
+        if verbose : print "--> Updating distances"
         compute_topomesh_property(topomesh,'length',degree=1)
         end_time = time()
-        print "<-- Updating distances       [",end_time-start_time,"s]"
+        if verbose : print "<-- Updating distances       [",end_time-start_time,"s]"
 
-        print topomesh.nb_wisps(0)," Vertices, ",topomesh.nb_wisps(2)," Triangles, ",topomesh.nb_wisps(3)," Cells"
+        if verbose : print topomesh.nb_wisps(0)," Vertices, ",topomesh.nb_wisps(2)," Triangles, ",topomesh.nb_wisps(3)," Cells"
 
 
 def property_topomesh_cell_vertex_force(topomesh,gradient_derivatives,voxelsize):
@@ -606,7 +606,6 @@ def property_topomesh_laplacian_epidermis_convexity_force(topomesh):
     if not topomesh.has_wisp_property('cells',degree=1,is_computed=True):
         compute_topomesh_property(topomesh,'cells',degree=1)
 
-
     epidermis_convexity_force = array_dict(np.zeros_like(topomesh.wisp_property('barycenter',degree=0).values(),np.float32),np.array(list(topomesh.wisps(0))))
 
     edge_cells_degree = np.array(map(len,topomesh.wisp_property('cells',degree=1).values()))
@@ -626,7 +625,7 @@ def property_topomesh_laplacian_epidermis_convexity_force(topomesh):
                                     nd.sum(edge_vectors[:,1],edge_vertices[:,0],index=epidermis_vertices),
                                     nd.sum(edge_vectors[:,2],edge_vertices[:,0],index=epidermis_vertices)])
 
-    laplacian_force = laplacian_force/vertices_degrees[:,np.newaxis]
+    laplacian_force[vertices_degrees>0] = laplacian_force[vertices_degrees>0]/vertices_degrees[vertices_degrees>0][:,np.newaxis]
 
     # vertex_cell_barycenter = np.array([np.mean(topomesh.wisp_property('barycenter',degree=3).values(c),axis=0)  for c in topomesh.wisp_property('cells',0).values(epidermis_vertices)])
     # vertices_directions = topomesh.wisp_property('barycenter',degree=0).values(epidermis_vertices) - vertex_cell_barycenter
@@ -715,6 +714,7 @@ def property_topomesh_interface_planarization_force(topomesh):
 
 
 def property_topomesh_epidermis_convexity_force(topomesh):
+
     if not topomesh.has_wisp_property('barycenter',degree=3,is_computed=True):
         compute_topomesh_property(topomesh,'barycenter',degree=3)
 
@@ -737,16 +737,16 @@ def property_topomesh_epidermis_convexity_force(topomesh):
     triangle_cell_barycenters = topomesh.wisp_property('barycenter',degree=3).values(triangle_cell)
 
     triangle_barycenters = topomesh.wisp_property('barycenter',degree=2).values(epidermis_triangles)
-    cell_epidermis_barycenters = np.transpose([nd.mean(triangle_barycenters[:,0],triangle_cell,index=list(topomesh.wisps(3))),
-                                               nd.mean(triangle_barycenters[:,1],triangle_cell,index=list(topomesh.wisps(3))),
-                                               nd.mean(triangle_barycenters[:,2],triangle_cell,index=list(topomesh.wisps(3)))])
+    cell_epidermis_barycenters = np.transpose([nd.sum(triangle_barycenters[:,k],triangle_cell,index=list(topomesh.wisps(3))) for k in xrange(3)])
+    cell_epidermis_n_triangles = nd.sum(np.ones_like(triangle_cell),triangle_cell,index=list(topomesh.wisps(3)))
+    cell_epidermis_barycenters[cell_epidermis_n_triangles>0] /= cell_epidermis_n_triangles[cell_epidermis_n_triangles>0][:,np.newaxis]
+
     cell_epidermis_barycenters = array_dict(cell_epidermis_barycenters,keys=list(topomesh.wisps(3)))
     triangle_epidermis_barycenters = cell_epidermis_barycenters.values(triangle_cell)
 
     # print triangle_epidermis_barycenters.shape
     triangle_epidermis_directions = triangle_epidermis_barycenters - triangle_cell_barycenters
     # print triangle_epidermis_directions.shape
-
 
     triangle_normal_vectors = topomesh.wisp_property('normal',degree=2).values(epidermis_triangles)
     # reversed_normals = np.where(np.dot(triangle_normal_vectors,triangle_interface_directions) < 0)[0]
@@ -763,8 +763,7 @@ def property_topomesh_epidermis_convexity_force(topomesh):
     # triangle_target_normals = cell_normal_vectors.values(triangle_cell)
 
     triangle_radius_direction = triangle_barycenters - triangle_cell_barycenters
-    triangle_target_normals = triangle_radius_direction/np.linalg.norm(triangle_radius_direction,axis=1)[:,np.newaxis]
-
+    triangle_target_normals = triangle_radius_direction/np.maximum(1e-5,np.linalg.norm(triangle_radius_direction,axis=1))[:,np.newaxis]
 
     triangle_vertices = topomesh.wisp_property('vertices',degree=2).values(epidermis_triangles)
     epidermis_vertices = np.unique(triangle_vertices)
@@ -779,15 +778,17 @@ def property_topomesh_epidermis_convexity_force(topomesh):
     triangle_point_projectors = -triangle_plane_products[:,np.newaxis]*np.tile(triangle_target_normals,(3,1))
     triangle_projectors_norm = np.linalg.norm(triangle_point_projectors,axis=1)
     non_planar_points = np.where(triangle_projectors_norm > 1.)[0]
-    triangle_point_projectors[non_planar_points] = triangle_point_projectors[non_planar_points]/triangle_projectors_norm[non_planar_points,np.newaxis]
+    triangle_point_projectors[non_planar_points] = triangle_point_projectors[non_planar_points]/np.maximum(1e-5,triangle_projectors_norm)[non_planar_points,np.newaxis]
     convex_points = np.where(triangle_plane_products>0.)[0]
     triangle_point_projectors[convex_points] = np.array([0.,0.,0.])
+
 
     convexity_unitary_force = triangle_point_projectors
 
     epidermis_convexity_force = np.transpose([nd.sum(convexity_unitary_force[:,0],triangle_vertices[:,0],index=list(topomesh.wisps(0))),
                                                   nd.sum(convexity_unitary_force[:,1],triangle_vertices[:,0],index=list(topomesh.wisps(0))),
                                                   nd.sum(convexity_unitary_force[:,2],triangle_vertices[:,0],index=list(topomesh.wisps(0)))])
+
 
     return epidermis_convexity_force
 

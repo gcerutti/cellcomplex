@@ -21,10 +21,33 @@ def mpl_draw_topomesh(topomesh,figure,degree=2,coef=1,property_name="",property_
     compute_topomesh_property(topomesh,'barycenter',2)
     triangle_positions = np.concatenate([b + coef*(p-b) for p,b in zip(positions.values(triangles),topomesh.wisp_property('barycenter',2).values())])
     triangle_triangles = np.arange(3*len(triangles)).reshape((len(triangles),3))
-    
     triangulation = tri.Triangulation(triangle_positions[:,0],triangle_positions[:,1],triangle_triangles)
-    if degree==2:
-        if property_name == "":
+
+    if degree==3:
+        compute_topomesh_property(topomesh,'barycenter',3)
+        compute_topomesh_property(topomesh,'triangles',3)
+        cell_triangles = np.concatenate(topomesh.wisp_property('vertices',2).values(topomesh.wisp_property('triangles',3).values()))
+        cell_triangle_cells = np.concatenate([c*np.ones_like(topomesh.wisp_property('triangles',3)[c]) for c in topomesh.wisps(3)])
+        cell_triangle_positions = np.concatenate([b + coef*(p-b) for p,b in zip(positions.values(cell_triangles),topomesh.wisp_property('barycenter',3).values(cell_triangle_cells))])
+        cell_triangle_triangles = np.arange(3*len(cell_triangles)).reshape((len(cell_triangles),3))
+        cell_triangulation = tri.Triangulation(cell_triangle_positions[:,0],cell_triangle_positions[:,1],cell_triangle_triangles)
+    
+        if (property_name is None) or (property_name == ""):
+            cell_triangle_property = cell_triangle_cells
+        else:
+            if property_degree == 3:
+                cell_triangle_property = topomesh.wisp_property(property_name,property_degree).values(cell_triangle_cells)
+            elif property_degree == 2:
+                cell_triangle_property = topomesh.wisp_property(property_name,property_degree).values(np.concatenate(topomesh.wisp_property('triangles',3).values()))
+            elif property_degree == 0:
+                cell_triangle_property = topomesh.wisp_property(property_name,property_degree).values(cell_triangles)
+        if intensity_range is None:
+            intensity_range = (cell_triangle_property.min(),cell_triangle_property.max())
+        figure.gca().tripcolor(cell_triangulation,cell_triangle_property,cmap=colormap,alpha=alpha,vmin=intensity_range[0],vmax=intensity_range[1])
+                
+
+    elif degree==2:
+        if (property_name is None) or (property_name == ""):
             if topomesh.has_wisp_property('color',2):
                 colors = topomesh.wisp_property('color',2).values()
             else:
@@ -64,7 +87,7 @@ def mpl_draw_topomesh(topomesh,figure,degree=2,coef=1,property_name="",property_
                 figure.gca().plot(p[:,0],p[:,1],color=color,linewidth=linewidth,alpha=alpha)
 
     elif degree==0:
-        if property_name == "":
+        if (property_name is None) or (property_name == ""):
             if topomesh.has_wisp_property('color',0):
                 colors = topomesh.wisp_property('color',0).values()
             else:
@@ -77,5 +100,5 @@ def mpl_draw_topomesh(topomesh,figure,degree=2,coef=1,property_name="",property_
                     intensity_range = (vertex_property.min(),vertex_property.max())
                 figure.gca().scatter(positions.values(list(topomesh.wisps(0)))[:,0],positions.values(list(topomesh.wisps(0)))[:,1],c=vertex_property,s=size,linewidth=linewidth,cmap=colormap,alpha=alpha,vmin=intensity_range[0],vmax=intensity_range[1])
 
-    figure.canvas.draw()
-    plt.pause(1e-3)
+    # figure.canvas.draw()
+    # plt.pause(1e-3)
