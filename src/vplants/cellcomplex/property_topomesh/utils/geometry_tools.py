@@ -50,9 +50,9 @@ def tetra_geometric_features(tetrahedra,positions,features=['volume','max_distan
         tetra_mean_eccentricities = tetra_triangle_eccentricities.mean(axis=1)
 
         tetra_triangle_sinuses = np.zeros_like(tetra_edge_lengths,np.float64)
-        tetra_triangle_sinuses[...,0] = np.sqrt(np.array(1.0 - np.power(tetra_edge_lengths[...,1]**2+tetra_edge_lengths[...,2]**2-tetra_edge_lengths[...,0]**2,2.0)/np.power(2.0*tetra_edge_lengths[...,1]*tetra_edge_lengths[...,2],2.0),np.float64))
-        tetra_triangle_sinuses[...,1] = np.sqrt(np.array(1.0 - np.power(tetra_edge_lengths[...,2]**2+tetra_edge_lengths[...,0]**2-tetra_edge_lengths[...,1]**2,2.0)/np.power(2.0*tetra_edge_lengths[...,2]*tetra_edge_lengths[...,0],2.0),np.float64))
-        tetra_triangle_sinuses[...,2] = np.sqrt(np.array(1.0 - np.power(tetra_edge_lengths[...,0]**2+tetra_edge_lengths[...,1]**2-tetra_edge_lengths[...,2]**2,2.0)/np.power(2.0*tetra_edge_lengths[...,0]*tetra_edge_lengths[...,1],2.0),np.float64))
+        tetra_triangle_sinuses[...,0] = np.sqrt(np.maximum(0,np.array(1.0 - np.power(tetra_edge_lengths[...,1]**2+tetra_edge_lengths[...,2]**2-tetra_edge_lengths[...,0]**2,2.0)/np.power(np.maximum(1e-5,2.0*tetra_edge_lengths[...,1]*tetra_edge_lengths[...,2]),2.0),np.float64)))
+        tetra_triangle_sinuses[...,1] = np.sqrt(np.maximum(0,np.array(1.0 - np.power(tetra_edge_lengths[...,2]**2+tetra_edge_lengths[...,0]**2-tetra_edge_lengths[...,1]**2,2.0)/np.power(np.maximum(1e-5,2.0*tetra_edge_lengths[...,2]*tetra_edge_lengths[...,0]),2.0),np.float64)))
+        tetra_triangle_sinuses[...,2] = np.sqrt(np.maximum(0,np.array(1.0 - np.power(tetra_edge_lengths[...,0]**2+tetra_edge_lengths[...,1]**2-tetra_edge_lengths[...,2]**2,2.0)/np.power(np.maximum(1e-5,2.0*tetra_edge_lengths[...,0]*tetra_edge_lengths[...,1]),2.0),np.float64)))
             # triangle_sinuses[...,1] = np.sqrt(np.array(1.0 - np.power(edge_lengths[:,2]**2+edge_lengths[:,0]**2-edge_lengths[:,1]**2,2.0)/np.power(2.0*edge_lengths[:,2]*edge_lengths[:,0],2.0),np.float16))
             # triangle_sinuses[:,2] = np.sqrt(np.array(1.0 - np.power(edge_lengths[:,0]**2+edge_lengths[:,1]**2-edge_lengths[:,2]**2,2.0)/np.power(2.0*edge_lengths[:,0]*edge_lengths[:,1],2.0),np.float16))
 
@@ -63,7 +63,7 @@ def tetra_geometric_features(tetrahedra,positions,features=['volume','max_distan
         tetra_inscribed_sphere_radius = 3.*tetra_volumes/tetra_areas
         tetra_features['inscribed_sphere_radius'] = tetra_inscribed_sphere_radius
 
-        tetra_eccentricities = 1.0 - 216.*np.sqrt(3.)*np.power(tetra_volumes,2.0)/np.power(tetra_areas,3.0)
+        tetra_eccentricities = 1.0 - 216.*np.sqrt(3.)*np.power(tetra_volumes,2.0)/np.maximum(1e-5,np.power(tetra_areas,3.0))
         tetra_features['eccentricity'] = tetra_eccentricities
 
         tetra_edges = tetrahedra[:,tetra_edge_list]
@@ -156,7 +156,7 @@ def triangle_geometric_features(triangles,positions,features=['area','max_distan
     triangle_features['area'] = np.sqrt(np.maximum(0,(triangle_features['perimeter']/2.0)*(triangle_features['perimeter']/2.0-triangle_edge_lengths[...,0])*(triangle_features['perimeter']/2.0-triangle_edge_lengths[...,1])*(triangle_features['perimeter']/2.0-triangle_edge_lengths[...,2])))
 
 
-    triangle_features['eccentricity'] = 1. - (12.0*np.sqrt(3)*triangle_features['area'])/np.power(triangle_features['perimeter'],2.0)
+    triangle_features['eccentricity'] = 1. - (12.0*np.sqrt(3)*triangle_features['area'])/np.power(np.maximum(1e-5,triangle_features['perimeter']),2.0)
     
     # if ('max_distance' in features) or ('min_distance' in features):
     sorted_triangle_edge_lengths = np.sort(triangle_edge_lengths)

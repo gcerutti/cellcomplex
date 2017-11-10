@@ -18,7 +18,7 @@
 ###############################################################################
 
 import numpy as np
-from scipy.spatial.qhull import Delaunay
+from scipy.spatial.qhull import Delaunay, QhullError
 
 from vplants.cellcomplex.property_topomesh.utils.array_tools  import array_unique
 
@@ -30,9 +30,22 @@ def delaunay_triangulation(points):
     if np.any(np.isnan(points)):
         triangles = np.array([])
     elif len(np.unique(points[:,2])) == 1:
-        triangles = Delaunay(np.array(points)[:,:2]).simplices
+        if np.all(points==0):
+            triangles = np.array([])
+        else:
+            # try:
+            triangles = Delaunay(np.array(points)[:,:2]).simplices
+            # except QhullError:
+            #    triangles = np.array([])
     else:
-        tetras = Delaunay(np.array(points)).simplices
+        if np.all(points==0):
+            tetras = [[0,1,2,3]]
+        else:
+            # try:
+            tetras = Delaunay(np.array(points)).simplices
+            # except QhullError:
+            #     tetras = [[0,1,2,3]]
+        
         triangles = array_unique(np.sort(np.concatenate(tetras[:,tetra_triangle_list])))
 
     return triangles

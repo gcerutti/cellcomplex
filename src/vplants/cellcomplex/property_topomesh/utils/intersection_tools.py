@@ -32,22 +32,22 @@ def inside_triangle(point,triangles):
     dot12 = np.einsum('ij,ij->i',v1,v2)
     
     invDenom = 1./(dot00 * dot11-dot01*dot01)
-    u = np.float16((dot11 * dot02 - dot01 * dot12)*invDenom)
-    v = np.float16((dot00 * dot12 - dot01 * dot02)*invDenom)
+    u = np.float64((dot11 * dot02 - dot01 * dot12)*invDenom)
+    v = np.float64((dot00 * dot12 - dot01 * dot02)*invDenom)
 
     return (u>=0) & (v>=0) & (u+v<=1)
 
 def intersecting_segment(segment,line_segments):
     if line_segments.ndim > 2:
-        det_seg0 = np.array(np.linalg.det(np.transpose([segment[0]-line_segments[:,0],line_segments[:,1]-line_segments[:,0]],(1,2,0))),np.float16)
-        det_seg1 = np.array(np.linalg.det(np.transpose([segment[1]-line_segments[:,0],line_segments[:,1]-line_segments[:,0]],(1,2,0))),np.float16)
-        det_lin0 = np.array(np.linalg.det(np.transpose([line_segments[:,0]-segment[0],np.tile(segment[1]-segment[0],(line_segments.shape[0],1))],(1,2,0))),np.float16)
-        det_lin1 = np.array(np.linalg.det(np.transpose([line_segments[:,1]-segment[0],np.tile(segment[1]-segment[0],(line_segments.shape[0],1))],(1,2,0))),np.float16)
+        det_seg0 = np.array(np.linalg.det(np.transpose([segment[0]-line_segments[:,0],line_segments[:,1]-line_segments[:,0]],(1,2,0))),np.float64)
+        det_seg1 = np.array(np.linalg.det(np.transpose([segment[1]-line_segments[:,0],line_segments[:,1]-line_segments[:,0]],(1,2,0))),np.float64)
+        det_lin0 = np.array(np.linalg.det(np.transpose([line_segments[:,0]-segment[0],np.tile(segment[1]-segment[0],(line_segments.shape[0],1))],(1,2,0))),np.float64)
+        det_lin1 = np.array(np.linalg.det(np.transpose([line_segments[:,1]-segment[0],np.tile(segment[1]-segment[0],(line_segments.shape[0],1))],(1,2,0))),np.float64)
     else:
-        det_seg0 = np.array(np.linalg.det(np.transpose([segment[0]-line_segments[0],line_segments[1]-line_segments[0]])),np.float16)
-        det_seg1 = np.array(np.linalg.det(np.transpose([segment[1]-line_segments[0],line_segments[1]-line_segments[0]])),np.float16)
-        det_lin0 = np.array(np.linalg.det(np.transpose([line_segments[0]-segment[0],segment[1]-segment[0]])),np.float16)
-        det_lin1 = np.array(np.linalg.det(np.transpose([line_segments[1]-segment[0],segment[1]-segment[0]])),np.float16)
+        det_seg0 = np.array(np.linalg.det(np.transpose([segment[0]-line_segments[0],line_segments[1]-line_segments[0]])),np.float64)
+        det_seg1 = np.array(np.linalg.det(np.transpose([segment[1]-line_segments[0],line_segments[1]-line_segments[0]])),np.float64)
+        det_lin0 = np.array(np.linalg.det(np.transpose([line_segments[0]-segment[0],segment[1]-segment[0]])),np.float64)
+        det_lin1 = np.array(np.linalg.det(np.transpose([line_segments[1]-segment[0],segment[1]-segment[0]])),np.float64)
 
     return ((det_seg0*det_seg1 < 0) & (det_lin0*det_lin1 < 0))
 
@@ -64,9 +64,9 @@ def intersecting_triangle(segment,triangles):
 
         triangle_norm = np.einsum('...ij,...ij->...i',triangle_p,triangle_edge_1[np.newaxis,:])
             
-        triangle_distance = np.array(np.einsum('...ij,...ij->...i',triangle_q,triangle_edge_2[np.newaxis,:])/triangle_norm,np.float16)
-        triangle_projection_u = np.array(np.einsum('...ij,...ij->...i',triangle_p,edge_rays_t[np.newaxis,:])/triangle_norm,np.float16)
-        triangle_projection_v = np.array(np.einsum('...ij,...ij->...i',triangle_q,edge_rays_d[np.newaxis,:])/triangle_norm,np.float16)
+        triangle_distance = np.array(np.einsum('...ij,...ij->...i',triangle_q,triangle_edge_2[np.newaxis,:])/triangle_norm,np.float64)
+        triangle_projection_u = np.array(np.einsum('...ij,...ij->...i',triangle_p,edge_rays_t[np.newaxis,:])/triangle_norm,np.float64)
+        triangle_projection_v = np.array(np.einsum('...ij,...ij->...i',triangle_q,edge_rays_d[np.newaxis,:])/triangle_norm,np.float64)
 
         edge_triangle_intersection = (triangle_distance>0)&(triangle_distance<1)&(triangle_projection_u>0)&(triangle_projection_v>0)&(triangle_projection_u+triangle_projection_v<1)
     else:
@@ -80,9 +80,9 @@ def intersecting_triangle(segment,triangles):
 
         triangle_norm = np.einsum('...ij,...ij->...i',triangle_p,triangle_edge_1)
             
-        triangle_distance = np.array(np.einsum('...ij,...ij->...i',triangle_q,triangle_edge_2)/triangle_norm,np.float16)
-        triangle_projection_u = np.array(np.einsum('...ij,...ij->...i',triangle_p,edge_rays_t[np.newaxis,:])/triangle_norm,np.float16)
-        triangle_projection_v = np.array(np.einsum('...ij,...ij->...i',triangle_q,edge_rays_d[np.newaxis,:])/triangle_norm,np.float16)
+        triangle_distance = np.array(np.einsum('...ij,...ij->...i',triangle_q,triangle_edge_2)/np.maximum(1e-5,triangle_norm),np.float64)
+        triangle_projection_u = np.array(np.einsum('...ij,...ij->...i',triangle_p,edge_rays_t[np.newaxis,:])/np.maximum(1e-5,triangle_norm),np.float64)
+        triangle_projection_v = np.array(np.einsum('...ij,...ij->...i',triangle_q,edge_rays_d[np.newaxis,:])/np.maximum(1e-5,triangle_norm),np.float64)
 
         edge_triangle_intersection = (triangle_distance>0)&(triangle_distance<1)&(triangle_projection_u>0)&(triangle_projection_v>0)&(triangle_projection_u+triangle_projection_v<1)
 
